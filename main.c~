@@ -1,23 +1,20 @@
-#include <io.h>
-#include <delay.h>
+#include <lis331dl.h>
 
-
+eeprom int x=0;
 
 void main(void)
 {
-    DDRD=0x00;
+    char data=0x00;  
+    char address=0x20;
+    acc_init(); 
     DDRB=0xff;
-    PORTB=0x80; 
     while(1)
-    {   
-        if(PORTB==0x01)
-        {
-            PORTB=0x80;
-        }              
-        else
-        {
-            PORTB/=2;
-        }
-        delay_ms(300);
-    }  
+    {    
+        set_at_address(adress,data);
+        delay_ms(10);               
+        PORTB=get_at_address(address);  
+        data++;
+        delay_ms(1000);    
+    } 
+    x=0;
 }
