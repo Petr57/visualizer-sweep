@@ -16,7 +16,7 @@
 #define clock_hight 4 
 
 //port initialization
-void acc_init();
+void I2C_init();
 
 //set start on the bus
 void send_start();

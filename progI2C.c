@@ -1,7 +1,7 @@
 #include<progI2C.h>
 
 
-void acc_init()
+void I2C_init()
 {
     ACCDDR |= (1<<ACCPOWER)|(1<<SCL)|(1<<SDA);   //SDA,SCL,POWER set out
     ACCPORT |= (1<<ACCPOWER)|(1<<SCL)|(1<<SDA);  //SDA,SCL,POWER set 1       
