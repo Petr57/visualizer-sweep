@@ -9,9 +9,9 @@ eeprom int x=0;
 void main(void)
 {   
     #asm("sei")      //set enable interrupts
-    sweep_init();   
-    /*    
+    sweep_init();  
     delay_ms(2000); 
+    /*     
     char level=0x08; 
     signed char temp; 
     char i;
@@ -26,9 +26,9 @@ void main(void)
         delay_ms(2000);
     }*/  
     while(1)
-    {                 
-        try_update(); 
-        /*     
+    {  
+        try_update();     
+        /*                  
         if(i==100)
         {
             for(j=0;j<100;j++)
