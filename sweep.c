@@ -1,130 +1,59 @@
 #include <sweep.h> 
  
 __flash char Frame[]={0xf0,0x88,0x8c,0x88,0xf0,0x88,0x88,0xf0}; //symbol B //{0x01,0x02,0x04,0x08,0x10,0x20,0x40,0x80};//{0x86,0x86,0xfe,0x86,0x86,0x86,0x7e,0x00}; //symbol A
-//extern eeprom char values[100];
-//extern char i;
-          
-char line_pointer=0;
-char dir=0;                 //0-up 1-down
 
-char enable_update=0;               //permission to update the acceleration data
-char enable_check=0;                //permission to processing acceleration data
-unsigned int last_inf_time=0;
-signed char acc_values[5];
-char pointer=0;
-
-unsigned int periods_arr[8];
-unsigned int period=7800;   //time of one swing
+signed char last_min=0,last_max=0,last_value=0;
+char direction,line_pointer,dir_counter=2;  //0,1 - negative direction dir=1; 2,3 - positive direction dir=0;
 
 void sweep_init()
 {      
     acc_init(); 
     DDRB=0xff;              //set output portB
-    set_periods();
-    TCCR0B |=(1<<CS02);     //set prescale 256 on TIMER0  
-    TCCR1B |=(1<<CS12);     //set prescale 256 on TIMER1   
-    TIMSK |=(1<<OCIE1A)|(1<<OCIE1B)|(1<<TOIE0);     //set enable Compare A/B Match interrupts on TIMER1 and Overflow on TIMER0
-    
-    OCR0A=128;
-    OCR1A=TCNT1+period;
-    set_line();
 }
 
 void set_line()
 {  
-    if(dir)
+    if(direction)
         FRAMEPORT=Frame[7-line_pointer];          //set output line
-    else
-        FRAMEPORT=Frame[line_pointer];          
-    OCR1B=TCNT1+periods_arr[line_pointer];      //set time for line
-    if(line_pointer<7) line_pointer++;
+    else        
+        FRAMEPORT=Frame[line_pointer];  
 }
 
-void set_periods()
+void sweep_update(void)
 {
-    periods_arr[0]=(period/(int)4-period/(int)50);      //23%
-    periods_arr[1]=(period/(int)8-period/(int)50);      //10,5%
-    periods_arr[2]=(period/(int)11-period/(int)200);    //8,6% 
-    periods_arr[3]=(period/(int)12-period/(int)300);    //8%
-    periods_arr[4]=periods_arr[3];
-    periods_arr[5]=periods_arr[2]; 
-    periods_arr[6]=periods_arr[1];
-    periods_arr[7]=period;    
-}
-
-void set_new_swing()
-{
-    period=TCNT1-last_inf_time; 
-    OCR1A=TCNT1+period/2;  
-    set_periods();
-    last_inf_time=TCNT1; 
-    enable_check=0; 
-    if(dir)
-        dir=0;
-    else
-        dir=1; 
-    line_pointer=0; 
-    //PORTB=period>>8;
-    set_line();
-}
-
-int check_inf()
-{
-    char pt4=(pointer+4)%5,pt3=(pointer+3)%5,pt2=(pointer+2)%5;
-    if(dir)
-    {   
-        if((acc_values[pt4]>acc_values[pt3])&&(acc_values[pt3]<=acc_values[pt2]))
-        {
-            return 1;
-        }
-    }  
-    else
-    {   
-        if((acc_values[pt4]<acc_values[pt3])&&(acc_values[pt3]>=acc_values[pt2]))
-        {
-            return 1;
-        }
-    }
-    return 0;
-}
-
-void try_update()
-{
-    if(enable_update&&enable_check)
+    signed char value,line_width;
+    value=get_Y();
+    if(value<last_min) last_min=value;
+    if(value>last_max) last_max=value;
+    if((value>last_value)&&(dir_counter<3))     dir_counter++;  //value rising -> dir_counter++
+    if((value<last_value)&&(dir_counter>0))     dir_counter--;  //value falling -> dir_counter--  
+    
+    line_width=(last_max-last_min)/8;
+    if(direction)
     { 
-        enable_update=0;  
-        acc_values[pointer]=get_Y(); 
-        //if(i<100) values[i++]=acc_values[pointer];
-        pointer=(pointer+1)%5;
-        if(check_inf())
-            set_new_swing();           
+        if(dir_counter>1)
+        {
+            direction=0;
+            last_min=value;
+            line_pointer=0;
+        }
+        if(value<last_max-line_width*(line_pointer+1))
+        {
+            set_line();
+        }
+    }
+    else
+    {
+        if(dir_counter<2)
+        {
+            direction=1;
+            last_max=value;
+            line_pointer=0;
+        }
+        if(value>last_min+line_width*(line_pointer+1))
+        {
+            set_line();
+        }
     }
 }
 
-interrupt [TIM1_COMPA] void period_overflow(void)
-{ 
-    enable_check=1; 
-/*
-    OCR1A=TCNT1+period;  
-    if(dir)
-        dir=0;
-    else
-        dir=1; 
-    line_pointer=0;
-    set_line(); */  
-} 
-
-interrupt [TIM1_COMPB] void line_overflow(void)
-{
-    set_line();
-}
-
-interrupt [TIM0_OVF] void next_value(void)        //~120 OVF per second
-{
-    enable_update=1;
-}
-/*
-interrupt [TIM0_COMPA] void next_value2(void)
-{
-    //enable_update=1;
-} */
