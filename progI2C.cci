@@ -1,0 +1,10 @@
+VERSION:3 SOURCE_TIMESTAMP:4395B599
+NODE:I LEVEL:0 LINE:1 "progI2C.h"
+NODE:F LEVEL:0 LINE:4 "I2C_init(void)"
+NODE:F LEVEL:0 LINE:10 "send_start(void)"
+NODE:F LEVEL:0 LINE:19 "repeat_start(void)"
+NODE:F LEVEL:0 LINE:29 "send_byte(unsigned char message)"
+NODE:F LEVEL:0 LINE:52 "get_byte(void)"
+NODE:F LEVEL:0 LINE:69 "get_sak(void)"
+NODE:F LEVEL:0 LINE:83 "send_mak(unsigned char mode)"
+NODE:F LEVEL:0 LINE:98 "send_stop(void)"

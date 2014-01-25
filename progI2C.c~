@@ -1,4 +1,4 @@
-#include"acc_I2C.h"
+#include<progI2C.h>
 
 
 void acc_init()
@@ -46,6 +46,7 @@ void send_byte(char message)
         ACCPORT &= ~(1<<SCL);   //SCL=0
         delay_us(hold_time);          
     }
+    get_sak();
 }
 
 char get_byte()
@@ -59,6 +60,8 @@ char get_byte()
         temp = temp<<1;  
         delay_us(setup_time);
         temp |= ACCPIN&(1<<SDA);
+        ACCPORT &= ~(1<<SCL);       //SCL=0 
+        delay_us(hold_time);
     }
     return temp;
 }

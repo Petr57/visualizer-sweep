@@ -26,17 +26,8 @@ void set_at_address(char reg_addr, char data)
 void acc_init()
 {
     I2C_init(); 
-    delay_ms(100);
-    set_at_address(CTRL_REG1,0b01000111);
-}
-
-axis_values get_axis_values()
-{
-    axis_values temp;
-    temp.X=get_at_address(OUT_X);
-    temp.Y=get_at_address(OUT_Y);
-    temp.Z=get_at_address(OUT_Z);
-    return temp;
+    delay_ms(10);
+    set_at_address(CTRL_REG1,0b11100111); //set DR, PD, FS, Zen, Yen, Xen
 }
 
 signed char get_X()
@@ -46,8 +37,18 @@ signed char get_X()
 signed char get_Y()
 {
     return get_at_address(OUT_Y);
-}
+} 
+/*
 signed char get_Z()
 {
     return get_at_address(OUT_Z);
-}
+}   
+
+axis_values get_axis_values()
+{
+    axis_values temp;
+    temp.X=get_at_address(OUT_X);
+    temp.Y=get_at_address(OUT_Y);
+    temp.Z=get_at_address(OUT_Z);
+    return temp;
+}  */

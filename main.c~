@@ -1,20 +1,17 @@
-#include <lis331dl.h>
+#include <sweep.h>
 
 eeprom int x=0;
+char global_counter=0;
 
 void main(void)
-{
-    char data=0x00;  
-    char address=0x20;
-    acc_init(); 
-    DDRB=0xff;
+{   
+    #asm("sei")      //set enable interrupts
+    sweep_init();   
     while(1)
-    {    
-        set_at_address(adress,data);
-        delay_ms(10);               
-        PORTB=get_at_address(address);  
-        data++;
-        delay_ms(1000);    
+    {  
+        try_update();
+        #asm("sleep")
+        #asm("nop")              
     } 
     x=0;
 }

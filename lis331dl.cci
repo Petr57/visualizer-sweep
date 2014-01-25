@@ -1,0 +1,7 @@
+VERSION:3 SOURCE_TIMESTAMP:44398F66
+NODE:I LEVEL:0 LINE:1 "lis331dl.h"
+NODE:F LEVEL:0 LINE:3 "get_at_address(unsigned char reg_addr)"
+NODE:F LEVEL:0 LINE:17 "set_at_address(unsigned char reg_addr,unsigned char data)"
+NODE:F LEVEL:0 LINE:26 "acc_init(void)"
+NODE:F LEVEL:0 LINE:33 "get_X(void)"
+NODE:F LEVEL:0 LINE:37 "get_Y(void)"

@@ -3,8 +3,20 @@
 
 #define FRAMEPORT PORTB
 
-void sweep_init();
+void sweep_init(void);
 
-void set_line();
+void set_line(void);
 
-void sweep_update(void);
+void set_periods(void);
+
+void set_new_swing(void);
+
+int check_inf(signed char value);
+
+void try_update(void);
+
+interrupt [TIM1_COMPA] void period_overflow(void);
+
+interrupt [TIM1_COMPB] void line_overflow(void);
+
+interrupt [TIM0_OVF] void next_value(void);

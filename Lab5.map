@@ -1,11 +1,24 @@
 RAM Allocation
 Variable                                                          Address   Size
 --------------------------------------------------------------------------------
+dir_counter                                                       0x0080       1
+periods_arr                                                       0x0081      16
+period                                                            0x0091       2
 
 EEPROM Allocation
 Variable                                                          Address   Size
 --------------------------------------------------------------------------------
+x                                                                 0x0000       2
 
 Register Allocation
 Variable                                                          Register  Size
 --------------------------------------------------------------------------------
+next_symbol                                                       R3           1
+line_pointer                                                      R2           1
+dir                                                               R5           1
+enable_update                                                     R4           1
+enable_check                                                      R7           1
+last_inf_time                                                     R8,R9        2
+last_value                                                        R6           1
+last_time                                                         R10,R11      2
+more_last_time                                                    R12,R13      2
